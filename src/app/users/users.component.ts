@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, timer } from 'rxjs';
 import { User } from '../user/user';
 import { UserService } from '../user/user.service';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-users',
@@ -22,9 +22,10 @@ export class UsersComponent implements OnInit {
     // })
 
     this.users = timer(0, 1000).pipe(
+      tap(console.log),
       switchMap(() => this.userService.getUsers())
     );
-    
+
   }
 
 }
