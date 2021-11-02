@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { timer } from 'rxjs';
+import { Observable, timer } from 'rxjs';
 import { User } from '../user/user';
 import { UserService } from '../user/user.service';
 import { switchMap } from 'rxjs/operators';
@@ -11,7 +11,8 @@ import { switchMap } from 'rxjs/operators';
 })
 export class UsersComponent implements OnInit {
 
-  users = new Array<User>();
+  // users = new Array<User>();
+  users!:Observable<User[]>;
 
   constructor(private userService: UserService) { }
 
@@ -20,11 +21,10 @@ export class UsersComponent implements OnInit {
     //   this.users = res;
     // })
 
-    timer(0, 1000).pipe(
+    this.users = timer(0, 1000).pipe(
       switchMap(() => this.userService.getUsers())
-    ).subscribe(res => {
-      this.users = res;
-    });
+    );
+    
   }
 
 }
