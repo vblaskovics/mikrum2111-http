@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, timer } from 'rxjs';
+import { Observable, of, timer } from 'rxjs';
 import { User } from '../user/user';
 import { UserService } from '../user/user.service';
-import { switchMap, tap } from 'rxjs/operators';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-users',
@@ -21,10 +21,25 @@ export class UsersComponent implements OnInit {
     //   this.users = res;
     // })
 
+    // HIBAKEZELÉS#1
+    // this.users = timer(0, 1000).pipe(
+    //   tap(console.log),
+    //   switchMap(() => this.userService.getUsers()),
+    //   catchError(errorMsg => {
+    //     window.alert(errorMsg);
+    //     return of([]);
+    //   })
+    // )
+    // HIBAKEZELÉS#2
     this.users = timer(0, 1000).pipe(
       tap(console.log),
-      switchMap(() => this.userService.getUsers())
-    );
+      switchMap(() => this.userService.getUsers().pipe(
+        catchError(errorMsg => {
+          window.alert(errorMsg);
+          return of([]);
+        })
+      ))
+    )
 
   }
 
