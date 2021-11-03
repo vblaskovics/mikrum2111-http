@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, timer } from 'rxjs';
 import { User } from './user';
-import { catchError } from 'rxjs/operators';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -10,12 +10,23 @@ import { catchError } from 'rxjs/operators';
 export class UserService {
   private API: string = 'https://jsonplaceholder.typicode.com/users';
 
-  constructor(private httpClient: HttpClient) { }
+  private userStream:Observable<User[]>;
+
+  constructor(private httpClient: HttpClient) {
+    this.userStream = timer(0, 1000).pipe(
+      tap(console.log),
+      switchMap(() => this.getUsers())
+    );
+  }
 
   getUsers(): Observable<User[]> {
     return this.httpClient.get<User[]>(`${this.API}`).pipe(
       catchError(this.handleError)
     );
+  }
+
+  getUsersStream(): Observable<User[]> {
+    return this.userStream;
   }
 
   private handleError(error: HttpErrorResponse) {
