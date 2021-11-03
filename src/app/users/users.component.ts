@@ -30,17 +30,25 @@ export class UsersComponent implements OnInit {
     //     return of([]);
     //   })
     // )
-    // HIBAKEZELÉS#2
-    this.users = timer(0, 1000).pipe(
-      tap(console.log),
-      switchMap(() => this.userService.getUsers().pipe(
-        catchError(errorMsg => {
-          window.alert(errorMsg);
-          return of([]);
-        })
-      ))
-    )
 
+    // HIBAKEZELÉS#2
+    // this.users = timer(0, 1000).pipe(
+    //   tap(console.log),
+    //   switchMap(() => this.userService.getUsers().pipe(
+    //     catchError(errorMsg => {
+    //       window.alert(errorMsg);
+    //       return of([]);
+    //     })
+    //   ))
+    // )
+
+    // STREAM SERVICE
+    this.users = this.userService.getUsersStream();
+
+    // TOVÁBBI FELÍRATKOZÓ
+    this.userService.getUsersStream().subscribe(res => {
+      console.log('Users count:', res.length);
+    });
   }
 
 }
