@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError, timer } from 'rxjs';
 import { User } from './user';
-import { catchError, switchMap, tap } from 'rxjs/operators';
+import { catchError, share, switchMap, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,8 @@ export class UserService {
   constructor(private httpClient: HttpClient) {
     this.userStream = timer(0, 1000).pipe(
       tap(console.log),
-      switchMap(() => this.getUsers())
+      switchMap(() => this.getUsers()),
+      share()
     );
   }
 
