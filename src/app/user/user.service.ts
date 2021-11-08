@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError, timer } from 'rxjs';
 import { User } from './user';
-import { catchError, share, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, share, switchMap, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +27,13 @@ export class UserService {
 
   getUsersStream(): Observable<User[]> {
     return this.userStream;
+  }
+
+  getUserByUsername(username:string): Observable<User> {
+    let params = new HttpParams().set('username', username);
+    return this.httpClient.get<User[]>(this.API, {params:params}).pipe(
+      map(users => users[0])
+    )
   }
 
   private handleError(error: HttpErrorResponse) {

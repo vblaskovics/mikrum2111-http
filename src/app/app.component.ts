@@ -55,6 +55,6 @@ export class AppComponent {
   ngOnInit(){
     console.log('RXJS + HttpClient');
     // this.createPosts();
-    this.collectComments();
+    // this.collectComments();
   }
 }
