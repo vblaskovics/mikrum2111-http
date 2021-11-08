@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Post } from './post';
@@ -14,5 +14,10 @@ export class PostService {
 
   getPosts(): Observable<Post[]> {
     return this.http.get<Post[]>(`${this.API}`);
+  }
+
+  getPostsByUserId(userId: number): Observable<Post[]> {
+    let params = new HttpParams().set('userId', userId);
+    return this.http.get<Post[]>(this.API, {params})
   }
 }

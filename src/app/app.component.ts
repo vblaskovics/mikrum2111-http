@@ -52,9 +52,16 @@ export class AppComponent {
     console.log(results);
   }
 
+
+  // Sequential request example
+  getNumberOfUsersPosts = (username: string) => {
+    this.userService.getUserByUsername(username);
+  }
+
   ngOnInit(){
     console.log('RXJS + HttpClient');
     // this.createPosts();
     // this.collectComments();
+
   }
 }
