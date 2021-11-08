@@ -14,7 +14,6 @@ export class UserService {
 
   constructor(private httpClient: HttpClient) {
     this.userStream = timer(0, 1000).pipe(
-      tap(console.log),
       switchMap(() => this.getUsers()),
       share()
     );

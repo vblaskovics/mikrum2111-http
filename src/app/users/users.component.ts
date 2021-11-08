@@ -46,9 +46,10 @@ export class UsersComponent implements OnInit {
     this.users = this.userService.getUsersStream();
 
     // TOVÁBBI FELÍRATKOZÓ
-    this.userService.getUsersStream().subscribe(res => {
-      console.log('Users count:', res.length);
-    });
+    // this.userService.getUsersStream().subscribe(res => {
+    //   console.log('Users count:', res.length);
+    // });
+
   }
 
 }
