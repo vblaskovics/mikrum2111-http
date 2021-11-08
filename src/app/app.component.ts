@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { timer } from 'rxjs';
-import { timeout } from 'rxjs/operators';
+import { switchMap, timeout } from 'rxjs/operators';
 import { CommentService } from './comment/comment.service';
 import { PostService } from './post/post.service';
 import { UserService } from './user/user.service';
@@ -54,14 +54,19 @@ export class AppComponent {
 
 
   // Sequential request example
-  getNumberOfUsersPosts = (username: string) => {
-    this.userService.getUserByUsername(username);
+  printNumberOfUsersPosts = (username: string) => {
+    this.userService.getUserByUsername(username).pipe(
+      switchMap(user => this.postService.getPostsByUserId(user.id))
+    ).subscribe(posts => {
+      console.log(`Number of ${username}'s posts: ${posts.length}`);
+    })
   }
 
   ngOnInit(){
     console.log('RXJS + HttpClient');
     // this.createPosts();
     // this.collectComments();
+    this.printNumberOfUsersPosts('Bret');
 
   }
 }
