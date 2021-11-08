@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { forkJoin, timer } from 'rxjs';
+import { combineLatest, forkJoin, timer } from 'rxjs';
 import { delay, switchMap, timeout } from 'rxjs/operators';
 import { CommentService } from './comment/comment.service';
+import { Post } from './post/post';
 import { PostService } from './post/post.service';
+import { User } from './user/user';
 import { UserService } from './user/user.service';
 
 @Component({
@@ -65,14 +67,28 @@ export class AppComponent {
   // Parallel requests and async/await
   printUsersAndPostsCount = async () => {
     console.log('Parallel start', new Date().toLocaleTimeString());
-
+    
     let usersAndPosts = await forkJoin({
       users: this.userService.getUsers().pipe(delay(3000)),
       posts: this.postService.getPosts().pipe(delay(5000))
     }).toPromise()
-
+    
     console.log('Users:', usersAndPosts.users.length, 'Posts:', usersAndPosts.posts.length);
     console.log('Parallel end', new Date().toLocaleTimeString());
+  }
+
+  // Repeating parallel requests
+  printAndRepeatUsersAndPosts = () => {
+    console.log('Parallel start', new Date().toLocaleTimeString());
+    
+    combineLatest([
+      timer(0, 1000),
+      this.userService.getUsers().pipe(delay(3000)),
+      this.postService.getPosts().pipe(delay(5000))
+    ]).subscribe((res:[number, User[], Post[]]) => {
+      console.log('Results:', res);
+      console.log('Parrallel part arrived', new Date().toLocaleTimeString());
+    });
   }
 
 
@@ -81,6 +97,8 @@ export class AppComponent {
     // this.createPosts();
     // this.collectComments();
     // this.printNumberOfUsersPosts('Bret');
-    this.printUsersAndPostsCount();
+    // this.printUsersAndPostsCount();
+    this.printAndRepeatUsersAndPosts();
+
   }
 }
