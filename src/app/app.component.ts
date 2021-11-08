@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+import { timer } from 'rxjs';
 import { timeout } from 'rxjs/operators';
+import { CommentService } from './comment/comment.service';
 import { PostService } from './post/post.service';
 import { UserService } from './user/user.service';
 
@@ -11,7 +13,9 @@ import { UserService } from './user/user.service';
 export class AppComponent {
   title = 'mikrum2111-http';
 
-  constructor(private userService:UserService, private postService:PostService){}
+  constructor(private userService:UserService,
+    private postService:PostService,
+    private commentService:CommentService){}
 
   createPosts = async () => {
     let users = await this.userService.getUsers().toPromise();
@@ -27,8 +31,30 @@ export class AppComponent {
     console.log(results);
   }
 
+  collectComments = async () => {
+    let posts = await this.postService.getPosts().toPromise();
+    let comments = await this.commentService.getComments().toPromise();
+
+    let results:any[] = [];
+    let postsA:any = {}
+    posts.forEach(p => {
+      if (p.title.indexOf('a') !== -1){
+        postsA[p.id] = p;
+      }
+    });
+    
+    comments.forEach(c => {
+      if  (postsA[c.postId]) {
+        results.push(c);
+      }
+    })
+
+    console.log(results);
+  }
+
   ngOnInit(){
     console.log('RXJS + HttpClient');
-    this.createPosts();
+    // this.createPosts();
+    this.collectComments();
   }
 }
