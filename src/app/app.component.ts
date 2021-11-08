@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { timer } from 'rxjs';
-import { switchMap, timeout } from 'rxjs/operators';
+import { forkJoin, timer } from 'rxjs';
+import { delay, switchMap, timeout } from 'rxjs/operators';
 import { CommentService } from './comment/comment.service';
 import { PostService } from './post/post.service';
 import { UserService } from './user/user.service';
@@ -62,11 +62,25 @@ export class AppComponent {
     })
   }
 
+  // Parallel requests and async/await
+  printUsersAndPostsCount = async () => {
+    console.log('Parallel start', new Date().toLocaleTimeString());
+
+    let usersAndPosts = await forkJoin({
+      users: this.userService.getUsers().pipe(delay(3000)),
+      posts: this.postService.getPosts().pipe(delay(5000))
+    }).toPromise()
+
+    console.log('Users:', usersAndPosts.users.length, 'Posts:', usersAndPosts.posts.length);
+    console.log('Parallel end', new Date().toLocaleTimeString());
+  }
+
+
   ngOnInit(){
     console.log('RXJS + HttpClient');
     // this.createPosts();
     // this.collectComments();
-    this.printNumberOfUsersPosts('Bret');
-
+    // this.printNumberOfUsersPosts('Bret');
+    this.printUsersAndPostsCount();
   }
 }
