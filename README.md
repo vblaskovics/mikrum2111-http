@@ -9,6 +9,16 @@ Email alapján random fotó. Írj async-await-el sequential request-eket:
 - Valamelyik albumnak lekérjük a fotóit
 - Valamelyik fotónak az url-jét kiírjuk
 
+## 2. Feladat
+
+Email alapján random fotó. Írj switchMap-el sequential request-eket:
+
+- Email alapján lekérünk egy user-t
+- UserId alapján lekérjük az albumokat
+- Valamelyik albumnak lekérjük a fotóit
+- Valamelyik fotónak az url-jét kiírjuk
+
+
 # Mikrum2111Http
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.12.

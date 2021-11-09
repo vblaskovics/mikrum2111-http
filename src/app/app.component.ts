@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { combineLatest, forkJoin, timer } from 'rxjs';
 import { delay, switchMap, timeout } from 'rxjs/operators';
@@ -14,10 +15,11 @@ import { UserService } from './user/user.service';
 })
 export class AppComponent {
   title = 'mikrum2111-http';
+  API = 'https://jsonplaceholder.typicode.com';
 
   constructor(private userService:UserService,
     private postService:PostService,
-    private commentService:CommentService){}
+    private commentService:CommentService, private http:HttpClient){}
 
   createPosts = async () => {
     let users = await this.userService.getUsers().toPromise();
@@ -92,13 +94,23 @@ export class AppComponent {
   }
 
 
+  printPhotosCountByEmail = async (email:string) => {
+    // Use services in production! It's just an example for async/await
+    let user = await this.http.get<User[]>(`${this.API}/users?email=${email}`).toPromise();
+    let albums = await this.http.get<any>(`${this.API}/albums?userId=${user[0].id}`).toPromise();
+    let photos = await this.http.get<any>(`${this.API}/photos?albumId=${albums[0].id}`).toPromise();
+    console.log(photos[0].url);
+  }
+
+  
+
   ngOnInit(){
     console.log('RXJS + HttpClient');
     // this.createPosts();
     // this.collectComments();
     // this.printNumberOfUsersPosts('Bret');
     // this.printUsersAndPostsCount();
-    this.printAndRepeatUsersAndPosts();
-
+    // this.printAndRepeatUsersAndPosts();
+    this.printPhotosCountByEmail('Sincere@april.biz');
   }
 }
