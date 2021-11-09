@@ -26,7 +26,13 @@ Email top-level domain alapján szűrés
 - Ha .biz-re végződik az email címe, akkor kérd le hozzá a post-okat is, és írasd ki a post-jainak a számát
 - Ha nem .biz-re végződik, akkor a hozzá tartozó todo-kat kérd le, és azok számát írasd ki
 
+## 4. Feladat
 
+Elhúzódó kérések összehangolása
+
+- Kérj le 4 különböző delay-el és query-vel (id, name, email, username) user-eket
+- Ha beérkezik egy user, akkor kérd le a post-jait, és írasd ki azok számát!
+- Loggolj úgy, hogy lásd a beérkezések pontos idejét!
 
 # Mikrum2111Http
 
