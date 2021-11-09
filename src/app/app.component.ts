@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { combineLatest, forkJoin, timer } from 'rxjs';
+import { combineLatest, forkJoin, merge, timer } from 'rxjs';
 import { catchError, delay, filter, map, switchMap, tap, timeout } from 'rxjs/operators';
 import { CommentService } from './comment/comment.service';
 import { Post } from './post/post';
@@ -129,6 +129,28 @@ export class AppComponent {
       })
   }
 
+  printUsersPostsCount = () => {
+    let user1 = this.http.get<User>(`${this.API}/users/1`).pipe(
+      delay(2000));
+    let user2 = this.http.get<User[]>(`${this.API}/users?name=Ervin%20Howell`).pipe(
+      delay(1000),
+      map(users => users[0]));
+    let user3 = this.http.get<User[]>(`${this.API}/users?username=Samantha`).pipe(
+      delay(3000),
+      map(users => users[0]));
+    let user4 = this.http.get<User[]>(`${this.API}/users?email=Julianne.OConner@kory.org`).pipe(
+      delay(4000),
+      map(users => users[0]));
+
+    merge(user1, user2, user3, user4).pipe(
+      tap(u => console.log('USER', u.id, new Date().toLocaleTimeString())),
+      switchMap(u => this.postService.getPostsByUserId(u.id))
+    ).subscribe(posts => {
+      console.log(posts.length);
+    });
+
+  }
+
   ngOnInit(){
     console.log('RXJS + HttpClient');
     // this.createPosts();
@@ -138,7 +160,8 @@ export class AppComponent {
     // this.printAndRepeatUsersAndPosts();
     // this.printPhotosCountByEmail('Sincere@april.biz');
     // this.printPhotosCountByEmailSM('Sincere@april.biz');
-    this.printByEmailDomain(1);
-    this.printByEmailDomain(2);
+    // this.printByEmailDomain(1);
+    // this.printByEmailDomain(2);
+    this.printUsersPostsCount();
   }
 }
