@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { combineLatest, forkJoin, timer } from 'rxjs';
-import { delay, switchMap, timeout } from 'rxjs/operators';
+import { catchError, delay, filter, map, switchMap, tap, timeout } from 'rxjs/operators';
 import { CommentService } from './comment/comment.service';
 import { Post } from './post/post';
 import { PostService } from './post/post.service';
@@ -101,8 +101,33 @@ export class AppComponent {
     let photos = await this.http.get<any>(`${this.API}/photos?albumId=${albums[0].id}`).toPromise();
     console.log(photos[0].url);
   }
-
   
+  printPhotosCountByEmailSM = (email:string) => {
+    const selectRandomElement = (arr:any) => arr[Math.floor(Math.random() * arr.length)]
+    this.http.get<User[]>(`${this.API}/users?email=${email}`).pipe(
+      map(selectRandomElement),
+      switchMap(user => this.http.get<any>(`${this.API}/albums?userId=${user.id}`)),
+      map(selectRandomElement),
+      switchMap(album => this.http.get<any>(`${this.API}/photos?albumId=${album.id}`)),
+      map(selectRandomElement)
+    ).subscribe(photo => console.log(photo.url));
+  }
+
+  printByEmailDomain = (userId:number) => {
+    let userById = this.http.get<User>(`${this.API}/users/${userId}`);
+
+    let userBiz = userById.pipe(filter(u => u.email.endsWith('.biz')));
+    let userNoBiz = userById.pipe(filter(u => !u.email.endsWith('.biz')));
+
+    userBiz.pipe(switchMap(u => this.postService.getPostsByUserId(u.id)))
+      .subscribe(posts => {
+        console.log('Post count:', posts.length);
+      })
+    userNoBiz.pipe(switchMap(u => this.http.get<any[]>(`${this.API}/todos?userId=${u.id}`)))
+      .subscribe(todos => {
+        console.log('Todo count:', todos.length);
+      })
+  }
 
   ngOnInit(){
     console.log('RXJS + HttpClient');
@@ -111,6 +136,9 @@ export class AppComponent {
     // this.printNumberOfUsersPosts('Bret');
     // this.printUsersAndPostsCount();
     // this.printAndRepeatUsersAndPosts();
-    this.printPhotosCountByEmail('Sincere@april.biz');
+    // this.printPhotosCountByEmail('Sincere@april.biz');
+    // this.printPhotosCountByEmailSM('Sincere@april.biz');
+    this.printByEmailDomain(1);
+    this.printByEmailDomain(2);
   }
 }
