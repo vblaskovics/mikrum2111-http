@@ -18,6 +18,15 @@ Email alapján random fotó. Írj switchMap-el sequential request-eket:
 - Valamelyik albumnak lekérjük a fotóit
 - Valamelyik fotónak az url-jét kiírjuk
 
+## 3. Feladat
+
+Email top-level domain alapján szűrés
+
+- Írj függvényt, ami lekér egy user-t id alapján
+- Ha .biz-re végződik az email címe, akkor kérd le hozzá a post-okat is, és írasd ki a post-jainak a számát
+- Ha nem .biz-re végződik, akkor a hozzá tartozó todo-kat kérd le, és azok számát írasd ki
+
+
 
 # Mikrum2111Http
 
